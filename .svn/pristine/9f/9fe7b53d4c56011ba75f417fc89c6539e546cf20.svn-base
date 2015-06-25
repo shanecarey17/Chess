@@ -1,0 +1,79 @@
+
+public class Pawn extends Piece {
+
+	/**
+	 * Constructor for pawn
+	 * @param position Position on the board
+	 * @param color Color of the piece
+	 * @param board Reference to board the piece is on
+	 */
+	public Pawn(Square position, ChessColor color, Board board) {
+		super(position, color, board);
+		name = "\u265f";
+	}
+
+	@Override
+	boolean moveIsValid(Square destination) {
+		if(this.color == ChessColor.WHITE) {
+			return moveIsValidWhite(destination);
+		} else {
+			return moveIsValidBlack(destination);
+		}
+	}
+	
+	// Function for moving white pawn (forward)
+	private boolean moveIsValidWhite(Square destination) {
+		// Can move two spaces forward on first turn, if path is unoccupied
+		if(destination.yPosition == position.yPosition + 2 && destination.xPosition == position.xPosition && timesMoved == 0) {
+			Square path = new Square(position.xPosition, position.yPosition + 1);
+			if(board.getPieceAtSquare(path) == null && board.getPieceAtSquare(destination) == null) {
+				return true;
+			}
+		}
+		// Can move one space forward if not the first turn
+		if(destination.yPosition == position.yPosition + 1) {
+			// Can move directly forward if the square is unoccupied
+			if(destination.xPosition == position.xPosition) {
+				if(board.getPieceAtSquare(destination) == null) {
+					return true;
+				}
+			}
+			// Can move diagonally forward if the square is occupied by opponent
+			if(destination.xPosition == position.xPosition + 1 || destination.xPosition == position.xPosition - 1) {
+				Piece pieceAtDestination = board.getPieceAtSquare(destination);
+					if(pieceAtDestination != null && pieceAtDestination.color == ChessColor.BLACK) {
+						return true;
+					}
+			}
+		}
+		// Otherwise the move is not valid
+		return false;
+	}
+	
+	// Function for moving black pawn (backward) (follows same logic)
+	private boolean moveIsValidBlack(Square destination) {
+		if(destination.yPosition == position.yPosition - 2 && destination.xPosition == position.xPosition && timesMoved == 0) {
+			Square square = new Square(position.xPosition, position.yPosition - 1);
+			if(board.getPieceAtSquare(square) != null) {
+				return false;
+			}
+			return true;
+		}
+		if(destination.yPosition == position.yPosition - 1) {
+			if(destination.xPosition == position.xPosition) {
+				if(board.getPieceAtSquare(destination) != null) {
+					return false;
+				}
+				return true;
+			}
+			if(destination.xPosition == position.xPosition + 1 || destination.xPosition == position.xPosition - 1) {
+				Piece pieceAtDestination = board.getPieceAtSquare(destination);
+					if(pieceAtDestination != null && pieceAtDestination.color == ChessColor.WHITE) {
+						return true;
+					}
+			}
+		}
+		return false;
+	}
+
+}

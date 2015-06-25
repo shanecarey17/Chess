@@ -1,0 +1,181 @@
+import java.util.ArrayList;
+import java.util.Collection;
+
+public class Board {
+	
+	Piece[][] board;
+	Collection<Piece> whitePiecesInPlay;
+	Collection<Piece> blackPiecesInPlay;
+	Collection<Piece> whitePiecesCaptured;
+	Collection<Piece> blackPiecesCaptured;
+	Piece whiteKing;
+	Piece blackKing;
+	Color inCheck;
+	
+	public Board() {
+		// Size of board
+		board = new Piece[8][8];
+		// Structures for pieces
+		whitePiecesInPlay = new ArrayList<Piece>();
+		blackPiecesInPlay = new ArrayList<Piece>();
+		whitePiecesCaptured = new ArrayList<Piece>();
+		blackPiecesCaptured = new ArrayList<Piece>();
+		// White Pieces
+		board[0][0] = new Rook(new Square(0, 0), Color.WHITE, this);
+		board[1][0] = new Knight(new Square(1, 0), Color.WHITE, this);
+		board[2][0] = new Bishop(new Square(2, 0), Color.WHITE, this);
+		board[3][0] = new King(new Square(3, 0), Color.WHITE, this);
+		board[4][0] = new Queen(new Square(4, 0), Color.WHITE, this);
+		board[5][0] = new Bishop(new Square(5, 0), Color.WHITE, this);
+		board[6][0] = new Knight(new Square(6, 0), Color.WHITE, this);
+		board[7][0] = new Rook(new Square(7, 0), Color.WHITE, this);
+		
+		board[0][1] = new Pawn(new Square(0, 1), Color.WHITE, this);
+		board[1][1] = new Pawn(new Square(1, 1), Color.WHITE, this);
+		board[2][1] = new Pawn(new Square(2, 1), Color.WHITE, this);
+		board[3][1] = new Pawn(new Square(3, 1), Color.WHITE, this);
+		board[4][1] = new Pawn(new Square(4, 1), Color.WHITE, this);
+		board[5][1] = new Pawn(new Square(5, 1), Color.WHITE, this);
+		board[6][1] = new Pawn(new Square(6, 1), Color.WHITE, this);
+		board[7][1] = new Pawn(new Square(7, 1), Color.WHITE, this);
+		// Black Pieces
+		board[0][6] = new Pawn(new Square(0, 6), Color.BLACK, this);
+		board[1][6] = new Pawn(new Square(1, 6), Color.BLACK, this);
+		board[2][6] = new Pawn(new Square(2, 6), Color.BLACK, this);
+		board[3][6] = new Pawn(new Square(3, 6), Color.BLACK, this);
+		board[4][6] = new Pawn(new Square(4, 6), Color.BLACK, this);
+		board[5][6] = new Pawn(new Square(5, 6), Color.BLACK, this);
+		board[6][6] = new Pawn(new Square(6, 6), Color.BLACK, this);
+		board[7][6] = new Pawn(new Square(7, 6), Color.BLACK, this);
+		
+		board[0][7] = new Rook(new Square(0, 7), Color.BLACK, this);
+		board[1][7] = new Knight(new Square(1, 7), Color.BLACK, this);
+		board[2][7] = new Bishop(new Square(2, 7), Color.BLACK, this);
+		board[3][7] = new King(new Square(3, 7), Color.BLACK, this);
+		board[4][7] = new Queen(new Square(4, 7), Color.BLACK, this);
+		board[5][7] = new Bishop(new Square(5, 7), Color.BLACK, this);
+		board[6][7] = new Knight(new Square(6, 7), Color.BLACK, this);
+		board[7][7] = new Rook(new Square(7, 7), Color.BLACK, this);
+		
+		// King or keeping track of check
+		whiteKing = getPieceAtSquare(new Square(3, 0));
+		blackKing = getPieceAtSquare(new Square(3, 7));
+		
+		// Add pieces to in play set
+		for(int x = 0; x < 8; x++) {
+			for(int y = 0; y < 8; y++) {
+				Piece piece = getPieceAtSquare(new Square(x, y));
+				if(piece != null) {
+					if(piece.color == Color.WHITE) {
+						whitePiecesInPlay.add(piece);
+					} else {
+						blackPiecesInPlay.add(piece);
+					}
+				}
+			}
+		}
+		
+	}
+	
+	public void drawBoard() {
+		
+	}
+	
+	public void isCheckMate() {
+		// Create copy of board
+		// Check for all pieces of your color in play
+	}
+	
+	public boolean tryMovePiece(Square origin, Square destination) {
+		// Check that square is in bounds and not same square
+		// Get piece from origin and destination, make sure they are not same team
+		Piece pieceToMove = getPieceAtSquare(origin);
+		Piece pieceToCapture = getPieceAtSquare(destination);
+		if(pieceToCapture != null && pieceToMove.color == pieceToCapture.color) {
+			return false;
+		}
+		// Check if the destination is valid for the piece, handled totally internally
+		if(pieceToMove.moveIsValid(destination) == false) {
+			return false;
+		}
+		// Move the piece
+		movePiece(pieceToMove, origin, destination);
+		// Check that king is not in check, if so move piece back
+		if(isInCheck(pieceToMove.color)) {
+			movePiece(pieceToMove, destination, origin);
+			pieceToMove.undoMove();
+			// Replace captured piece if necessary
+			if(pieceToCapture != null) {
+				setPieceAtSquare(pieceToCapture, pieceToCapture.position);
+				// Add piece back into play
+				if(pieceToCapture.color == Color.WHITE) {
+					whitePiecesCaptured.remove(pieceToCapture);
+					whitePiecesInPlay.add(pieceToCapture);
+				} else {
+					blackPiecesCaptured.remove(pieceToCapture);
+					blackPiecesInPlay.add(pieceToCapture);
+				}
+			}
+			System.out.print("King in check");
+			return false;
+		}
+		// Piece was moved successfully
+		return true;
+	}
+	
+	public Piece getPieceAtSquare(Square square) {
+		return board[square.xPosition][square.yPosition];
+	}
+	
+	private void setPieceAtSquare(Piece piece, Square square) {
+		board[square.xPosition][square.yPosition] = piece;
+	}
+	
+	private void removePieceAtSquare(Square square) {
+		board[square.xPosition][square.yPosition] = null;
+	}
+	
+	// Moves a piece
+	private void movePiece(Piece piece, Square origin, Square destination) {
+		// Capture piece at destination if necessary
+		Piece captured = getPieceAtSquare(destination);
+		if(captured != null) {
+			if(captured.color == Color.WHITE) {
+				whitePiecesInPlay.remove(captured);
+				whitePiecesCaptured.add(captured);
+			}
+			else if(captured.color == Color.BLACK) {
+				blackPiecesInPlay.remove(captured);
+				blackPiecesCaptured.add(captured);
+			}
+		}
+		// Move piece from origin to destination
+		setPieceAtSquare(piece, destination);
+		removePieceAtSquare(origin);
+		// Change piece's position to destination
+		piece.moveToPosition(destination);
+		// Return the captured piece, in case we must replace it in case move is invalid
+	}
+	
+	private boolean isInCheck(Color color) {
+		// Get king of input color, and array of opposing pieces in play
+		Piece king;
+		Collection<Piece> opposingPieces;
+		if(color == Color.WHITE) {
+			opposingPieces = blackPiecesInPlay;
+			king = whiteKing;
+		} else {
+			opposingPieces = whitePiecesInPlay;
+			king = blackKing;
+		}
+		// Check that move to the king is not valid for any of the opposing pieces in play
+		for(Piece piece : opposingPieces) {
+			if(piece.moveIsValid(king.position)) {
+				return true;
+			}
+		}
+		// The king is not in check
+		return false;
+	}
+
+}

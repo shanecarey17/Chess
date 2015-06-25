@@ -1,0 +1,29 @@
+
+public abstract class Piece {
+	
+	Square position;
+	Color color;
+	Board board;
+	
+	protected int timesMoved;
+	
+	public Piece(Square position, Color color, Board board) {
+		this.position = position;
+		this.color = color;
+		this.board = board;
+		
+		timesMoved = 0;
+	}
+	
+	abstract boolean moveIsValid(Square destination);
+
+	public void moveToPosition(Square destination) {
+		position = destination;
+		timesMoved++;
+	}
+	
+	public void undoMove() {
+		timesMoved--;
+	}
+
+}

@@ -1,0 +1,23 @@
+
+public class King extends Piece {
+
+	/**
+	 * Constructor for king
+	 * @param position Position on the board
+	 * @param color Color of the piece
+	 * @param board Reference to board the piece is on
+	 */
+	public King(Square position, ChessColor color, Board board) {
+		super(position, color, board);
+		name = "King";
+	}
+
+	@Override
+	boolean moveIsValid(Square destination) {
+		if(Math.abs(destination.xPosition - position.xPosition) <= 1 && Math.abs(destination.yPosition - position.yPosition) <= 1) {
+			return true;
+		}
+		return false;
+	}
+
+}

@@ -1,0 +1,58 @@
+
+public class ClassicBoard extends Board {
+	
+	/**
+	 * Constructor for classic chess board
+	 */
+	public ClassicBoard() {
+		// Initializes data structures and puts pieces in play
+		super();
+		
+		// Size of board
+		width = 8;
+		height = 8;
+		board = new Piece[width][height];
+		
+		// White Pieces
+		board[0][0] = new Rook(new Square(0, 0), ChessColor.WHITE, this);
+		board[1][0] = new Knight(new Square(1, 0), ChessColor.WHITE, this);
+		board[2][0] = new Bishop(new Square(2, 0), ChessColor.WHITE, this);
+		board[3][0] = new Queen(new Square(3, 0), ChessColor.WHITE, this);
+		board[4][0] = new King(new Square(4, 0), ChessColor.WHITE, this);
+		board[5][0] = new Bishop(new Square(5, 0), ChessColor.WHITE, this);
+		board[6][0] = new Knight(new Square(6, 0), ChessColor.WHITE, this);
+		board[7][0] = new Rook(new Square(7, 0), ChessColor.WHITE, this);
+		
+		board[0][1] = new Pawn(new Square(0, 1), ChessColor.WHITE, this);
+		board[1][1] = new Pawn(new Square(1, 1), ChessColor.WHITE, this);
+		board[2][1] = new Pawn(new Square(2, 1), ChessColor.WHITE, this);
+		board[3][1] = new Pawn(new Square(3, 1), ChessColor.WHITE, this);
+		board[4][1] = new Pawn(new Square(4, 1), ChessColor.WHITE, this);
+		board[5][1] = new Pawn(new Square(5, 1), ChessColor.WHITE, this);
+		board[6][1] = new Pawn(new Square(6, 1), ChessColor.WHITE, this);
+		board[7][1] = new Pawn(new Square(7, 1), ChessColor.WHITE, this);
+		
+		// Black Pieces
+		board[0][6] = new Pawn(new Square(0, 6), ChessColor.BLACK, this);
+		board[1][6] = new Pawn(new Square(1, 6), ChessColor.BLACK, this);
+		board[2][6] = new Pawn(new Square(2, 6), ChessColor.BLACK, this);
+		board[3][6] = new Pawn(new Square(3, 6), ChessColor.BLACK, this);
+		board[4][6] = new Pawn(new Square(4, 6), ChessColor.BLACK, this);
+		board[5][6] = new Pawn(new Square(5, 6), ChessColor.BLACK, this);
+		board[6][6] = new Pawn(new Square(6, 6), ChessColor.BLACK, this);
+		board[7][6] = new Pawn(new Square(7, 6), ChessColor.BLACK, this);
+		
+		board[0][7] = new Rook(new Square(0, 7), ChessColor.BLACK, this);
+		board[1][7] = new Knight(new Square(1, 7), ChessColor.BLACK, this);
+		board[2][7] = new Bishop(new Square(2, 7), ChessColor.BLACK, this);
+		board[3][7] = new Queen(new Square(3, 7), ChessColor.BLACK, this);
+		board[4][7] = new King(new Square(4, 7), ChessColor.BLACK, this);
+		board[5][7] = new Bishop(new Square(5, 7), ChessColor.BLACK, this);
+		board[6][7] = new Knight(new Square(6, 7), ChessColor.BLACK, this);
+		board[7][7] = new Rook(new Square(7, 7), ChessColor.BLACK, this);
+		
+		addPiecesToPlay();
+		
+	}
+
+}

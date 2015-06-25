@@ -1,0 +1,48 @@
+
+public abstract class Piece {
+	
+	Square position;
+	ChessColor color;
+	Board board;
+	String name;
+	
+	protected int timesMoved;
+	
+	/**
+	 * Constructor for a piece
+	 * @param position The position to initialize the piece
+	 * @param color The color of the piece
+	 * @param board The board the piece is on
+	 */
+	public Piece(Square position, ChessColor color, Board board) {
+		this.position = position;
+		this.color = color;
+		this.board = board;
+		
+		timesMoved = 0;
+	}
+	
+	/**
+	 * Calculates whether the move is valid on the given board for this piece
+	 * @param destination The square to test if the move to is valid
+	 * @return TRUE if the move is valid FALSE otherwise
+	 */
+	abstract boolean moveIsValid(Square destination);
+
+	/**
+	 * Moves piece to destination square
+	 * @param destination The square to move the piece to
+	 */
+	public void moveToPosition(Square destination) {
+		position = destination;
+		timesMoved++;
+	}
+	
+	/**
+	 * Sets back the times moved counter in case a move needs to be taken back
+	 */
+	public void undoMove() {
+		timesMoved--;
+	}
+
+}

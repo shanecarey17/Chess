@@ -1,0 +1,92 @@
+
+public class Game {
+	
+	Board board;
+	ChessBoardGUI gui;
+	Player whitePlayer, blackPlayer, playerToMove;
+	Square startMove, endMove;
+	
+	/**
+	 * Constructor for game, initializes data structure and GUI
+	 */
+	public Game() {
+		board = new ClassicBoard();
+		gui = new ChessBoardGUI(this, board);
+		whitePlayer = new Player(ChessColor.WHITE, "White");
+		blackPlayer = new Player(ChessColor.BLACK, "Black");
+	}
+	
+	public void play() {
+		playerToMove = whitePlayer;
+		gui.setConsole(playerToMove.name + " to move");
+	}
+	
+	public void selectSquare(Square square) {
+		if(startMove != null) {
+			Piece toMove = board.getPieceAtSquare(square);
+			if(toMove != null && toMove.color == playerToMove.color) {
+				startMove = square;
+				gui.setConsole("Selected " + board.getPieceAtSquare(square).name + " at " + square);
+			} else {
+				endMove = square;
+				playMove();
+			}
+		} else {
+			Piece toMove = board.getPieceAtSquare(square);
+			if(toMove != null && toMove.color == playerToMove.color) {
+				startMove = square;
+				gui.setConsole("Selected " + board.getPieceAtSquare(square).name + " at " + square);
+			} else {
+				gui.setConsole("Invalid selection, choose a piece to move");
+			}
+		}
+	}
+	
+	public void forfeitGame() {
+		switchPlayer();
+		gui.setConsole("Winner: " + playerToMove.name);
+		restartGame();
+	}
+	
+	public void restartGame() {
+		board = new ClassicBoard();
+		gui.board = board;
+		gui.drawPieces();
+		play();
+	}
+	
+	public void undoMove() {
+		if(board.undoMove()) {
+			gui.drawPieces();
+			switchPlayer();
+			gui.setConsole("Took back move, " + playerToMove.name + " to move");
+		} else {
+			gui.setConsole("No moves to take back, " + playerToMove.name + " to move");
+		}
+	}
+	
+	private void playMove() {
+		if(board.tryMovePiece(playerToMove, startMove, endMove)) {
+			startMove = endMove = null;
+			gui.drawPieces();
+			switchPlayer();
+			if(board.isInCheckMate(playerToMove)) {
+				gui.setConsole("Check Mate, " + playerToMove.name);
+				gui.showCheck(playerToMove, true);
+				return;
+			} else if(board.isInCheck(playerToMove)) {
+				gui.setConsole(playerToMove.name + " is checked");
+				gui.showCheck(playerToMove, false);
+				return;
+			}
+			gui.setConsole(playerToMove.name + " to move");
+		} else {
+			startMove = endMove = null;
+			gui.setConsole("Invalid move, select another piece to move");
+		}
+	}
+	
+	private void switchPlayer() {
+		playerToMove = playerToMove == whitePlayer ? blackPlayer : whitePlayer;
+	}
+}

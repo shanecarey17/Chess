@@ -1,0 +1,20 @@
+
+public class Game {
+	
+	Board board;
+	ChessBoardGUI gui;
+	Player whitePlayer;
+	Player blackPlayer;
+	
+	/**
+	 * Constructor for game, initializes data structure and GUI
+	 */
+	public Game() {
+		board = new ClassicBoard();
+		gui = new ChessBoardGUI(board);
+	}
+	
+	public void play() {
+		
+	}
+}

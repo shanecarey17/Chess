@@ -1,0 +1,26 @@
+
+public class Zebra extends Piece {
+
+	public Zebra(Square position, ChessColor color, Board board) {
+		super(position, color, board);
+		// TODO Auto-generated constructor stub
+		name = "Zebra";
+	}
+
+	@Override
+	boolean moveIsValid(Square destination) {
+		// TODO Auto-generated method stub
+		if(destination.xPosition == position.xPosition + 2 || destination.xPosition == position.xPosition - 2) {
+			if(destination.yPosition == position.yPosition + 3 || destination.yPosition == position.yPosition - 3) {
+				return true;
+			}
+		}
+		if(destination.yPosition == position.yPosition + 2 || destination.yPosition == position.yPosition - 2) {
+			if(destination.xPosition == position.xPosition + 3 || destination.xPosition == position.xPosition - 3) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+}

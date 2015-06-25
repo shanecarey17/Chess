@@ -1,0 +1,142 @@
+import java.util.ArrayList;
+import java.util.Collection;
+
+public abstract class Board {
+	
+	Piece[][] board;
+	Collection<Piece> whitePiecesInPlay, blackPiecesInPlay, whitePiecesCaptured, blackPiecesCaptured;
+	Piece whiteKing, blackKing;
+	int width, height;
+	
+	/**
+	 * Abstract constructor for board
+	 */
+	public Board() {
+		// Structures for pieces
+		whitePiecesInPlay = new ArrayList<Piece>();
+		blackPiecesInPlay = new ArrayList<Piece>();
+		whitePiecesCaptured = new ArrayList<Piece>();
+		blackPiecesCaptured = new ArrayList<Piece>();
+	}
+	
+	/**
+	 * Tests if the given color has any remaining moves
+	 */
+	public void isCheckMate(ChessColor color) {
+		// Create copy of board
+		// Check for all pieces of your color in play
+	}
+	
+	/**
+	 * Attempts to move piece to destination
+	 * @param origin Square to move piece from
+	 * @param destination Square to move piece to
+	 * @return TRUE if the move was successful FALSE otherwise
+	 */
+	public boolean tryMovePiece(Square origin, Square destination) {
+		// Check that square is in bounds and not same square
+		if(origin.isSameAs(destination) || !isInBounds(destination)) {
+			return false;
+		}
+		// Get piece from origin and destination, make sure they are not same team
+		Piece pieceToMove = getPieceAtSquare(origin);
+		Piece pieceToCapture = getPieceAtSquare(destination);
+		if(pieceToCapture != null && pieceToMove.color == pieceToCapture.color) {
+			return false;
+		}
+		// Check if the destination is valid for the piece, handled totally internally
+		if(pieceToMove.moveIsValid(destination) == false) {
+			return false;
+		}
+		// Move the piece
+		movePiece(pieceToMove, origin, destination);
+		// Check that king is not in check, if so move piece back
+		if(isInCheck(pieceToMove.color)) {
+			movePiece(pieceToMove, destination, origin);
+			pieceToMove.undoMove();
+			// Replace captured piece if necessary
+			if(pieceToCapture != null) {
+				setPieceAtSquare(pieceToCapture, pieceToCapture.position);
+				// Add piece back into play
+				if(pieceToCapture.color == ChessColor.WHITE) {
+					whitePiecesCaptured.remove(pieceToCapture);
+					whitePiecesInPlay.add(pieceToCapture);
+				} else {
+					blackPiecesCaptured.remove(pieceToCapture);
+					blackPiecesInPlay.add(pieceToCapture);
+				}
+			}
+			return false;
+		}
+		// Piece was moved successfully
+		return true;
+	}
+	
+	/**
+	 * Getter for piece at square
+	 * @param square The square to get the piece from
+	 * @return A reference to the piece at the square, NULL if the square is empty
+	 */
+	public Piece getPieceAtSquare(Square square) {
+		return board[square.xPosition][square.yPosition];
+	}
+	
+	private void setPieceAtSquare(Piece piece, Square square) {
+		board[square.xPosition][square.yPosition] = piece;
+	}
+	
+	private void removePieceAtSquare(Square square) {
+		board[square.xPosition][square.yPosition] = null;
+	}
+	
+	// Moves a piece
+	private void movePiece(Piece piece, Square origin, Square destination) {
+		// Capture piece at destination if necessary
+		Piece captured = getPieceAtSquare(destination);
+		if(captured != null) {
+			if(captured.color == ChessColor.WHITE) {
+				whitePiecesInPlay.remove(captured);
+				whitePiecesCaptured.add(captured);
+			}
+			else if(captured.color == ChessColor.BLACK) {
+				blackPiecesInPlay.remove(captured);
+				blackPiecesCaptured.add(captured);
+			}
+		}
+		// Move piece from origin to destination
+		setPieceAtSquare(piece, destination);
+		removePieceAtSquare(origin);
+		// Change piece's position to destination
+		piece.moveToPosition(destination);
+		// Return the captured piece, in case we must replace it in case move is invalid
+	}
+	
+	private boolean isInCheck(ChessColor color) {
+		// Get king of input color, and array of opposing pieces in play
+		Piece king;
+		Collection<Piece> opposingPieces;
+		if(color == ChessColor.WHITE) {
+			opposingPieces = blackPiecesInPlay;
+			king = whiteKing;
+		} else {
+			opposingPieces = whitePiecesInPlay;
+			king = blackKing;
+		}
+		// Check that move to the king is not valid for any of the opposing pieces in play
+		for(Piece piece : opposingPieces) {
+			if(piece.moveIsValid(king.position)) {
+				return true;
+			}
+		}
+		// The king is not in check
+		return false;
+	}
+	
+	private boolean isInBounds(Square square) {
+		if(square.xPosition > width || square.xPosition < 0 || 
+				square.yPosition > height || square.yPosition < 0) {
+			return false;
+		} else return true;
+	}
+
+}

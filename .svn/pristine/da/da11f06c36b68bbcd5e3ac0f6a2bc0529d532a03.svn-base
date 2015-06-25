@@ -1,0 +1,61 @@
+
+public class Rook extends Piece {
+
+	public Rook(Square position, ChessColor color, Board board) {
+		super(position, color, board);
+		name = "Rook";
+		// TODO Auto-generated constructor stub
+	}
+
+	@Override
+	boolean moveIsValid(Square destination) {
+		// Can move in straight line any direction and any distance
+		if(destination.xPosition == position.xPosition ^ destination.yPosition == position.yPosition) {
+			if(pathIsClear(destination)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	private boolean pathIsClear(Square destination) {
+		if(destination.xPosition == position.xPosition) {
+			if(destination.yPosition > position.yPosition) {
+				for(int row = destination.yPosition - 1; row > position.yPosition; row--) {
+					Square test = new Square(position.xPosition, row);
+					if(board.getPieceAtSquare(test) != null) {
+						return false;
+					}
+				}
+			}
+			if(destination.yPosition < position.yPosition) {
+				for(int row = destination.yPosition + 1; row < position.yPosition; row++) {
+					Square test = new Square(position.xPosition, row);
+					if(board.getPieceAtSquare(test) != null) {
+						return false;
+					}
+				}
+			}
+		}
+		if(destination.yPosition == position.yPosition) {
+			if(destination.xPosition > position.xPosition) {
+				for(int column = destination.xPosition - 1; column > position.xPosition; column--) {
+					Square test = new Square(column, position.yPosition);
+					if(board.getPieceAtSquare(test) != null) {
+						return false;
+					}
+				}
+			}
+			if(destination.xPosition < position.xPosition) {
+				for(int column = destination.xPosition + 1; column < position.xPosition; column++) {
+					Square test = new Square(column, position.yPosition);
+					if(board.getPieceAtSquare(test) != null) {
+						return false;
+					}
+				}
+			}
+		}
+		return true;
+	}
+
+}

@@ -1,0 +1,123 @@
+
+public class Queen extends Piece {
+
+	/**
+	 * Constructor for queen
+	 * @param position Position on the board
+	 * @param color Color of the piece
+	 * @param board Reference to board the piece is on
+	 */
+	public Queen(Square position, ChessColor color, Board board) {
+		super(position, color, board);
+		name = "Queen";
+		// TODO Auto-generated constructor stub
+	}
+
+	@Override
+	boolean moveIsValid(Square destination) {
+		// Moves diagonal or straight
+		if((Math.abs(destination.xPosition - position.xPosition) == Math.abs(destination.yPosition - position.yPosition))) {
+			if(pathIsClearDiagonal(destination)) {
+				return true;
+			}
+		} else if(destination.xPosition == position.xPosition ^ destination.yPosition == position.yPosition) {
+			if(pathIsClearStraight(destination)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	private boolean pathIsClearStraight(Square destination) {
+		if(destination.xPosition == position.xPosition) {
+			if(destination.yPosition > position.yPosition) {
+				for(int row = destination.yPosition - 1; row > position.yPosition; row--) {
+					Square test = new Square(position.xPosition, row);
+					if(board.getPieceAtSquare(test) != null) {
+						return false;
+					}
+				}
+			}
+			if(destination.yPosition < position.yPosition) {
+				for(int row = destination.yPosition + 1; row < position.yPosition; row++) {
+					Square test = new Square(position.xPosition, row);
+					if(board.getPieceAtSquare(test) != null) {
+						return false;
+					}
+				}
+			}
+		}
+		if(destination.yPosition == position.yPosition) {
+			if(destination.xPosition > position.xPosition) {
+				for(int column = destination.xPosition - 1; column > position.xPosition; column--) {
+					Square test = new Square(column, position.yPosition);
+					if(board.getPieceAtSquare(test) != null) {
+						return false;
+					}
+				}
+			}
+			if(destination.xPosition < position.xPosition) {
+				for(int column = destination.xPosition + 1; column < position.xPosition; column++) {
+					Square test = new Square(column, position.yPosition);
+					if(board.getPieceAtSquare(test) != null) {
+						return false;
+					}
+				}
+			}
+		}
+		return true;
+	}
+	
+	private boolean pathIsClearDiagonal(Square destination) {
+		if(destination.xPosition > position.xPosition && destination.yPosition > position.yPosition) {
+			int x = destination.xPosition - 1;
+			int y = destination.yPosition - 1;
+			while(x > position.xPosition && y > position.yPosition) {
+				Square test = new Square(x, y);
+				if(board.getPieceAtSquare(test) != null) {
+					return false;
+				}
+				x--;
+				y--;
+			}
+		}
+		else if(destination.xPosition > position.xPosition && destination.yPosition < position.yPosition) {
+			int x = destination.xPosition - 1;
+			int y = destination.yPosition + 1;
+			while(x > position.xPosition && y < position.yPosition) {
+				Square test = new Square(x, y);
+				if(board.getPieceAtSquare(test) != null) {
+					return false;
+				}
+				x--;
+				y++;
+			}
+		}
+		else if(destination.xPosition < position.xPosition && destination.yPosition > position.yPosition) {
+			int x = destination.xPosition + 1;
+			int y = destination.yPosition - 1;
+			while(x < position.xPosition && y > position.yPosition) {
+				Square test = new Square(x, y);
+				if(board.getPieceAtSquare(test) != null) {
+					return false;
+				}
+				x++;
+				y--;
+			}
+		}
+		else if(destination.xPosition < position.xPosition && destination.yPosition < position.yPosition) {
+			int x = destination.xPosition + 1;
+			int y = destination.yPosition + 1;
+			while(x < position.xPosition && y < position.yPosition) {
+				Square test = new Square(x, y);
+				if(board.getPieceAtSquare(test) != null) {
+					return false;
+				}
+				x++;
+				y++;
+			}
+		}
+		return true;
+	}
+
+}

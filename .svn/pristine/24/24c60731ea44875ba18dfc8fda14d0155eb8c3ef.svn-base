@@ -1,0 +1,77 @@
+
+public class Bishop extends Piece {
+
+	/**
+	 * Constructor for bishop
+	 * @param position Position on the board
+	 * @param color Color of the piece
+	 * @param board Reference to board the piece is on
+	 */
+	public Bishop(Square position, ChessColor color, Board board) {
+		super(position, color, board);
+		name = "Bishop";
+	}
+
+	@Override
+	boolean moveIsValid(Square destination) {
+		if(Math.abs(destination.xPosition - position.xPosition) == Math.abs(destination.yPosition - position.yPosition)) {
+			if(pathIsClear(destination)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	private boolean pathIsClear(Square destination) {
+		if(destination.xPosition > position.xPosition && destination.yPosition > position.yPosition) {
+			int x = destination.xPosition - 1;
+			int y = destination.yPosition - 1;
+			while(x > position.xPosition && y > position.yPosition) {
+				Square test = new Square(x, y);
+				if(board.getPieceAtSquare(test) != null) {
+					return false;
+				}
+				x--;
+				y--;
+			}
+		}
+		else if(destination.xPosition > position.xPosition && destination.yPosition < position.yPosition) {
+			int x = destination.xPosition - 1;
+			int y = destination.yPosition + 1;
+			while(x > position.xPosition && y < position.yPosition) {
+				Square test = new Square(x, y);
+				if(board.getPieceAtSquare(test) != null) {
+					return false;
+				}
+				x--;
+				y++;
+			}
+		}
+		else if(destination.xPosition < position.xPosition && destination.yPosition > position.yPosition) {
+			int x = destination.xPosition + 1;
+			int y = destination.yPosition - 1;
+			while(x < position.xPosition && y > position.yPosition) {
+				Square test = new Square(x, y);
+				if(board.getPieceAtSquare(test) != null) {
+					return false;
+				}
+				x++;
+				y--;
+			}
+		}
+		else if(destination.xPosition < position.xPosition && destination.yPosition < position.yPosition) {
+			int x = destination.xPosition + 1;
+			int y = destination.yPosition + 1;
+			while(x < position.xPosition && y < position.yPosition) {
+				Square test = new Square(x, y);
+				if(board.getPieceAtSquare(test) != null) {
+					return false;
+				}
+				x++;
+				y++;
+			}
+		}
+		return true;
+	}
+
+}

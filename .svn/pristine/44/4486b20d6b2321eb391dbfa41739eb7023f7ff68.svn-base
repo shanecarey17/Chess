@@ -1,0 +1,16 @@
+
+public class King extends Piece {
+
+	public King(Square position, Color color, Board board) {
+		super(position, color, board);
+	}
+
+	@Override
+	boolean moveIsValid(Square destination) {
+		if(Math.abs(destination.xPosition - position.xPosition) <= 1 && Math.abs(destination.yPosition - position.yPosition) <= 1) {
+			return true;
+		}
+		return false;
+	}
+
+}
